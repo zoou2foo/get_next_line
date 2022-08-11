@@ -6,7 +6,7 @@
 /*   By: vjean <vjean@student.42quebec.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 08:27:57 by vjean             #+#    #+#             */
-/*   Updated: 2022/08/10 14:45:01 by vjean            ###   ########.fr       */
+/*   Updated: 2022/08/11 11:52:35 by vjean            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ char	*ft_copy_n_join(char *stash, char *buffer)
 		return (gnl_strdup(buffer));
 	else
 		temp = gnl_strjoin(stash, buffer);
-	free (stash);
 	return (temp);
 }
 
@@ -106,15 +105,14 @@ char	*get_next_line(int fd)
 	char		*res;
 
 	ret = 1;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0 || fd >= OPEN_MAX)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 		return (NULL);
 	buffer = ft_calloc_gnl(sizeof(char), BUFFER_SIZE + 1);
 	while (ret != 0 && !gnl_str_chr(stash[fd], '\n'))
 	{
-		ret = read(fd, buffer, BUFFER_SIZE);
-		buffer[ret] = '\0';
-		if (ret > 0)
-			stash[fd] = ft_copy_n_join(stash[fd], buffer);
+		 ret = do_shit(ret, buffer, stash, fd);
+		 if (ret == -1)
+		 	return (NULL);
 	}
 	free(buffer);
 	if (strlen_gnl(stash[fd]) == 0)
